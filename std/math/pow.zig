@@ -239,13 +239,18 @@ pub fn pow(x: f64, y: f64) -> f64 {
   if (j >= 0x40900000) {
     if (((j - 0x40900000)|i) != 0) {
       return s*huge*huge;
-    } else if ((j&0x7fffffff) >= 0x4090cc00){
-      if (((j-0xc090cc00)|i) != 0)
-        return s*tiny*tiny;
-      if (p_l <= z - p_h)
-        return s*tiny*tiny;
     }
-
+    if (p_l + ovt > z - p_h){
+      return s*huge*huge;
+    }
+    } else if ((j&0x7fffffff) >= 0x4090cc00){
+      if (((j - 0xc090cc00)|i) != 0) {
+        return s*tiny*tiny;
+      }
+      if (p_l <= z - p_h) {
+        return s*tiny*tiny;
+      }
+    }
 
     i = j & 0x7fffffff;
     k = (i>>20) - 0x3ff;
@@ -278,7 +283,7 @@ pub fn pow(x: f64, y: f64) -> f64 {
       util.SET_HIGH_WORD(&z,j);
     }
     return s*z;
-  }
+  
 
 }
 
